@@ -1,0 +1,142 @@
+../
+
+import random
+
+# Definindo a.s categorias e perguntas
+categorias = {
+    "História": [
+        "Qual é a capital da França?",
+        "Quem pintou a Mona Lisa?",
+        "Em que ano ocorreu a Segunda Guerra Mundial?"
+    ],
+    "Geografia": [
+        "Qual o maior país do mundo em área terrestre?",
+        "Qual rio é o mais longo do mundo?",
+        "Em qual continente se localiza o Monte Everest?"
+    ],
+    "Ciência": [
+        "Qual a fórmula química da água?",
+        "Qual o planeta mais próximo do Sol?",
+        "Quem formulou a teoria da relatividade?"
+    ],
+    "Entretenimento": [
+        "Quem é o autor do livro 'Dom Casmurro'?",
+        "Qual é o filme mais premiado da história do Oscar?",
+        "De quem é a música 'Let It Be'?"
+    ],
+    "Esportes": [
+        "Qual é o esporte mais popular no Brasil?",
+        "Quantos jogadores compõem um time de futebol?",
+        "Em que país nasceu o lendário jogador de basquete Michael Jordan?"
+    ]
+}
+
+# Funções
+
+def fazer_pergunta(pergunta, opcoes):
+    print("\n" + pergunta)
+    for i, opcao in enumerate(opcoes):
+        print(f"{i+1}. {opcao}")
+    return int(input("Escolha a sua resposta (número): "))
+
+def verificar_resposta(resposta, resposta_correta, opcoes):
+    if resposta == resposta_correta:
+        print("Resposta correta!")
+        return 1
+    else:
+        print(f"Resposta incorreta. A resposta correta era: {opcoes[resposta_correta-1]}")
+        return 0
+
+
+def jogar_jogo():
+    pontuacao = 0
+    numero_perguntas = 3  # Quantidade de perguntas por categoria
+
+    # Selecionando as categorias aleatoriamente
+    categorias_escolhidas = random.sample(list(categorias.keys()), 2)
+    print(f"Você foi desafiado nas categorias: {', '.join(categorias_escolhidas)}!")
+
+    for categoria in categorias_escolhidas:
+        perguntas_categoria = random.sample(categorias[categoria], numero_perguntas)
+        
+        for pergunta in perguntas_categoria:
+            resposta_correta = categorias[categoria].index(pergunta) + 1
+            tentativas = 0
+            
+            # Oferecendo duas tentativas para responder cada pergunta
+            while tentativas < 2:
+                resposta = fazer_pergunta(pergunta, categorias[categoria])
+                pontuacao += verificar_resposta(resposta, resposta_correta, categorias[categoria])
+                if pontuacao > 0:
+                    break
+                tentativas += 1
+            
+            if pontuacao == 0:
+                print("Você errou! Sua pontuação é 0.")
+                # Oferecendo a opção de jogar novamente se a pontuação for 0
+                while True:
+                    jogar_novamente = input("Quer jogar novo? (sim ou não) ")
+                    if jogar_novamente.lower() == "não":
+                        return
+                    elif jogar_novamente.lower() == "sim":
+                        pontuacao = 0
+                        break
+    
+    # Exibindo a pontuação final
+    print(f"\nSua pontuação final é: {pontuacao}/{numero_perguntas * len(categorias_escolhidas)}")
+
+
+def adicionar_categoria():
+    nome_categoria = input("Digite o nome da nova categoria: ")
+    # Verificando se a categoria já existe
+    if nome_categoria in categorias:
+        print("Essa categoria já existe!")
+        return
+    else:
+        perguntas = []
+        num_perguntas = int(input("Quantas perguntas deseja adicionar a essa categoria? "))
+        for i in range(num_perguntas):
+            pergunta = input(f"Digite a pergunta {i+1}: ")
+            perguntas.append(pergunta)
+        categorias[nome_categoria] = perguntas
+        print(f"A categoria {nome_categoria} foi adicionada com sucesso!")
+
+def remover_categoria():
+    nome_categoria = input("Digite o nome da categoria que deseja remover: ")
+    # Verificando se a categoria existe
+    if nome_categoria not in categorias:
+        print("Essa categoria não existe!")
+        return
+    else:
+        del categorias[nome_categoria]
+        print(f"A categoria {nome_categoria} foi removida com sucesso!")
+
+def listar_categorias():
+    print("Categorias disponíveis:")
+    for categoria in categorias:
+        print(categoria)
+
+
+# Menu de opções
+while True:
+    print("O que deseja fazer?")
+    print("1. Jogar o jogo")
+    print("2. Adicionar categoria")
+    print("3. Remover categoria")
+    print("4. Listar categorias")
+    print("5. Sair")
+
+    opcao = int(input("Digite o número da opção: "))
+
+    if opcao == 1:
+        jogar_jogo()
+    elif opcao == 2:
+        adicionar_categoria()
+    elif opcao == 3:
+        remover_categoria()
+    elif opcao == 4:
+        listar_categorias()
+    elif opcao == 5:
+        break
+    else:
+        print("Opção inválida! Tente novamente.")
